@@ -31,6 +31,7 @@ func NewMemoryStore() *MemoryStore {
 func (s *MemoryStore) Create(text string) Note {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
 	n := Note{ID: s.nextID, Text: text}
 	s.nextID++
 	s.notes[n.ID] = n
@@ -40,6 +41,7 @@ func (s *MemoryStore) Create(text string) Note {
 func (s *MemoryStore) Get(id int) (Note, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+
 	n, ok := s.notes[id]
 	return n, ok
 }
@@ -47,7 +49,9 @@ func (s *MemoryStore) Get(id int) (Note, bool) {
 func Handler(store Store) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /api/v1/notes", func(w http.ResponseWriter, r *http.Request) {
-		var in struct { Text string `json:"text"` }
+		var in struct {
+			Text string `json:"text"`
+		}
 		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&in); err != nil || strings.TrimSpace(in.Text) == "" {
 			http.Error(w, "invalid request", http.StatusBadRequest)
 			return
