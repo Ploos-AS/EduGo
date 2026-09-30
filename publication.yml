@@ -1,0 +1,11 @@
+title: EduGo
+subtitle: Learn Go from zero to production-ready systems and network programming
+author: Per Gustav Ousdal
+publisher: Ploos AS
+copyright: Copyright © 2026 Ploos AS
+license: CC-BY-4.0
+languages:
+  primary: nb-NO
+  parallel: en
+version: 1.0.0
+status: release-candidate
