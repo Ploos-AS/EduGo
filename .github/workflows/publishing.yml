@@ -1,0 +1,21 @@
+name: Publishing validation
+
+on:
+  push:
+    paths:
+      - publication.yml
+      - course/**
+      - .github/workflows/publishing.yml
+  pull_request:
+    paths:
+      - publication.yml
+      - course/**
+      - .github/workflows/publishing.yml
+  workflow_dispatch:
+
+jobs:
+  publishing:
+    uses: Ploos-AS/publishing/.github/workflows/reusable-book-validate.yml@v1
+    with:
+      publishing_ref: v1
+      metadata: publication.yml
