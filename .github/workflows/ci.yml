@@ -14,28 +14,41 @@ jobs:
           go-version: '1.25.x'
 
       - name: Format check
+        shell: bash
         run: |
-          test -z "$(gofmt -l examples exercises solutions projects 2>/dev/null || true)"
+          set -euo pipefail
+          unformatted=$(find examples exercises solutions projects -type f -name '*.go' -print0 | xargs -0 -r gofmt -l)
+          test -z "$unformatted" || { printf '%s\n' "$unformatted"; exit 1; }
 
-      - name: Test all Go modules
+      - name: Vet all Go modules
+        shell: bash
         run: |
-          set -eu
-          find examples exercises solutions projects -name go.mod -print0 2>/dev/null |
+          set -euo pipefail
           while IFS= read -r -d '' mod; do
             dir=$(dirname "$mod")
-            echo "==> $dir"
+            echo "==> vet: $dir"
+            (cd "$dir" && go vet ./...)
+          done < <(find examples exercises solutions projects -name go.mod -print0)
+
+      - name: Test all Go modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' mod; do
+            dir=$(dirname "$mod")
+            echo "==> test: $dir"
             (cd "$dir" && go test ./...)
-          done
+          done < <(find examples exercises solutions projects -name go.mod -print0)
 
       - name: Race detector
+        shell: bash
         run: |
-          set -eu
-          find examples exercises solutions projects -name go.mod -print0 2>/dev/null |
+          set -euo pipefail
           while IFS= read -r -d '' mod; do
             dir=$(dirname "$mod")
             echo "==> race: $dir"
             (cd "$dir" && go test -race ./...)
-          done
+          done < <(find examples exercises solutions projects -name go.mod -print0)
 
       - name: Build student OCI
         run: docker build -t edugo-student:ci student-oci
