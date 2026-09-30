@@ -52,3 +52,8 @@ jobs:
 
       - name: Build student OCI
         run: docker build -t edugo-student:ci student-oci
+
+      - name: Smoke test student OCI
+        run: |
+          docker run --rm edugo-student:ci go version
+          docker run --rm edugo-student:ci bash -lc 'tmp=$(mktemp -d); cd "$tmp"; printf "package main\nimport \"fmt\"\nfunc main(){fmt.Println(\"EduGo OCI OK\")}\n" > main.go; go run main.go | grep -Fx "EduGo OCI OK"'
