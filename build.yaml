@@ -1,0 +1,27 @@
+schema_version: 1
+build:
+  clean:
+    - rm -rf dist
+    - mkdir -p dist
+  targets:
+    web:
+      command: make web
+      outputs:
+        - dist/web/no/index.html
+        - dist/web/en/index.html
+    epub_nb:
+      command: make epub-nb
+      outputs:
+        - dist/EduGo-nb.epub
+    epub_en:
+      command: make epub-en
+      outputs:
+        - dist/EduGo-en.epub
+    pdf_nb:
+      command: make pdf-nb
+      outputs:
+        - dist/EduGo-nb.pdf
+    pdf_en:
+      command: make pdf-en
+      outputs:
+        - dist/EduGo-en.pdf
