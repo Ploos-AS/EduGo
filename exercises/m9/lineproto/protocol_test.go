@@ -2,6 +2,7 @@ package lineproto
 
 import (
 	"bytes"
+	"io"
 	"strings"
 	"testing"
 )
